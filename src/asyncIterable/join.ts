@@ -14,7 +14,7 @@ export class JoinIterator<T, U> extends AsyncIteratorClass<[T, U]> {
     this.b = isAsyncIterable(b) ? b[$$asyncIterator]() : new AsyncFromIterator(b)
   }
 
-  _next() {
+  protected _next() {
     const self = this
     Promise.all([self.a.next(), self.b.next()]).then(function ([nextA, nextB]) {
       if (nextA.done || nextB.done) {

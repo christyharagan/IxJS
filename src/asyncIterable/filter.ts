@@ -6,21 +6,31 @@ export class AsyncFilterIterator<T> extends AsyncIteratorClass<T> {
   protected it: AsyncIterator<T>
   protected i = 0
 
-  constructor(it: AsyncIterable<T>, protected fn: (value: T, index: number) => boolean) {
+  constructor(it: AsyncIterable<T>, protected fn: (value: T, index: number) => boolean | Promise<boolean>) {
     super()
     this.it = it[$$asyncIterator]()
   }
 
-  _next() {
+  protected _next() {
     const self = this
+    function processFilter(f: boolean, value: T) {
+      if (f) {
+        self.settleNext(value)
+      } else {
+        recurse()
+      }
+    }
     function recurse() {
       self.it.next().then(next => {
         if (next.done) {
           self.settleReturn(next.value)
-        } else if (self.fn(next.value, self.i++)) {
-          self.settleNext(next.value)
         } else {
-          recurse()
+          const f = self.fn(next.value, self.i++)
+          if (f instanceof Promise) {
+            f.then(f => processFilter(f, next.value))
+          } else {
+            processFilter(f, next.value)
+          }
         }
       }).catch(error => {
         self.settleThrow(error)

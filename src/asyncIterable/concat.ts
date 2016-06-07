@@ -11,7 +11,7 @@ export class AsyncConcatIterator<T> extends AsyncIteratorClass<T> {
     super()
   }
 
-  _next() {
+  protected _next() {
     const self = this
     const currentIterator = self.currentIterator
 

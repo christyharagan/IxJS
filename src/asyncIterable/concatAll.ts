@@ -14,8 +14,24 @@ export class AsyncConcatAllIterator<T> extends AsyncIteratorClass<T> {
     this.iterators = [isAsyncIterable(it) ? it[$$asyncIterator]() : new AsyncFromIterator(<Iterable<T>>it)]
   }
 
-  _next() {
+  protected _next() {
     const self = this
+
+    function process(_value: RecursiveOrElement<T>) {
+      if (isAsyncIterable(_value)) {
+        self.iterators.push(_value[$$asyncIterator]())
+        recurse()
+      } else if (isIterable(_value)) {
+        self.iterators.push(new AsyncFromIterator<RecursiveOrElement<T>>(_value))
+        recurse()
+      } else if (_value instanceof Promise) {
+        (<Promise<any>>_value).then(process).catch(e => {
+          self.settleThrow(e)
+        })
+      } else {
+        self.settleNext(<T>_value)
+      }
+    }
 
     function recurse() {
       if (self.iterators.length === 0) {
@@ -27,20 +43,7 @@ export class AsyncConcatAllIterator<T> extends AsyncIteratorClass<T> {
             self.iterators.pop()
             recurse()
           } else {
-            const _value = next.value
-            if (isAsyncIterable(_value)) {
-              self.iterators.push(_value[$$asyncIterator]())
-              recurse()
-            } else if (isIterable(_value)) {
-              self.iterators.push(new AsyncFromIterator(<Iterable<RecursiveOrElement<T>>>_value))
-              recurse()
-            } else {
-              try {
-                self.settleNext(<T>_value)
-              } catch (e) {
-                self.settleThrow(e)
-              }
-            }
+            process(next.value)
           }
         }).catch(e => {
           self.settleThrow(e)

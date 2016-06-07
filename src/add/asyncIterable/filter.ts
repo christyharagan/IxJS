@@ -5,6 +5,6 @@ AsyncIterableClass.prototype.filter = filter
 
 declare module '../../asyncIterable' {
   interface AsyncIterableClass<T> {
-    filter(fn: (value: T, index: number) => boolean): AsyncIterableClass<T>
+    filter(fn: (value: T, index: number) => boolean | Promise<boolean>): AsyncIterableClass<T>
   }
 }

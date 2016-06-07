@@ -6,20 +6,34 @@ export class AsyncMapIterator<T, U> extends AsyncIteratorClass<U> {
   protected it: AsyncIterator<T>
   protected i = 0
 
-  constructor(it: AsyncIterable<T>, protected fn: (value: T, index?: number) => U) {
+  constructor(it: AsyncIterable<T>, protected fn: (value: T, index?: number) => U | Promise<U>) {
     super()
     this.it = it[$$asyncIterator]()
   }
 
-  _next() {
+  protected _next() {
     const self = this
     self.it.next().then(next => {
       if (next.done) {
-        self.settleReturn(next.value ? self.fn(next.value, self.i++) : undefined)
+        self.settleReturn()
+        if (next.value) {
+          const retValue = self.fn(next.value, -1)
+          if (retValue instanceof Promise) {
+            retValue.then(retValue => self.settleReturn(retValue))
+          } else {
+            self.settleReturn(retValue)
+          }
+        } else {
+          self.settleReturn()
+        }
       } else {
         try {
           const value = self.fn(next.value, self.i++)
-          self.settleNext(value)
+          if (value instanceof Promise) {
+            value.then(value => self.settleNext(value))
+          } else {
+            self.settleNext(value)
+          }
         } catch (e) {
           self.settleThrow(e)
         }

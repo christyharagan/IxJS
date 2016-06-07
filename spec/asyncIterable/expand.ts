@@ -18,4 +18,20 @@ describe('AsyncIterable.expand', () => {
       return expect(concat).to.have.members([1, 4, 5, 2, 6, 3, 7])
     })
   })
+  it('should handle Promises', () => {
+    const a = [1, 2, 3]
+    const b = [[4, 5], [6], AsyncIterableClass.from([7])]
+
+    function f(i: number, index: number) {
+      if ((i - 1) >= b.length) {
+        return Promise.resolve(<number[]>[])
+      } else {
+        return Promise.resolve(b[i - 1])
+      }
+    }
+
+    return AsyncIterableClass.from(a).expand(f).toArray().then(concat => {
+      return expect(concat).to.have.members([1, 4, 5, 2, 6, 3, 7])
+    })
+  })
 })

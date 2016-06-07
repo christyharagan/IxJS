@@ -5,6 +5,6 @@ AsyncIterableClass.prototype.map = map
 
 declare module '../../asyncIterable' {
   interface AsyncIterableClass<T> {
-    map<U>(fn: (value: T, index?: number) => U): AsyncIterableClass<U>
+    map<U>(fn: (value: T, index?: number) => U | Promise<U>): AsyncIterableClass<U>
   }
 }

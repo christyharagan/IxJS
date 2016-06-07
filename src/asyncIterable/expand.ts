@@ -8,25 +8,33 @@ export class AsyncExpandIterator<T> extends AsyncIteratorClass<T> {
   protected iterators: AsyncIterator<T>[] = []
   protected currentValue: T | undefined
 
-  constructor(it: Iterable<T> | AsyncIterable<T>, protected project: (value: T, index?: number) => AsyncIterable<T> | Iterable<T>) {
+  constructor(it: Iterable<T> | AsyncIterable<T>, protected project: (value: T, index?: number) => AsyncIterable<T> | Iterable<T> | Promise<AsyncIterable<T> | Iterable<T>>) {
     super()
     this.iterators = [isAsyncIterable(it) ? it[$$asyncIterator]() : new AsyncFromIterator(<Iterable<T>>it)]
   }
 
-  _next() {
+  protected _next() {
     const self = this
+
+    function processProjection(r: AsyncIterable<T> | Iterable<T>) {
+      if (isAsyncIterable(r)) {
+        self.iterators.push(r[$$asyncIterator]())
+      } else {
+        self.iterators.push(new AsyncFromIterator(<Iterable<T>>r))
+      }
+      recurse()
+    }
 
     function recurse(): void {
       if (self.currentValue) {
         try {
           const r = self.project(self.currentValue, self.i++)
           self.currentValue = undefined
-          if (isAsyncIterable(r)) {
-            self.iterators.push(r[$$asyncIterator]())
+          if (r instanceof Promise) {
+            r.then(processProjection)
           } else {
-            self.iterators.push(new AsyncFromIterator(<Iterable<T>>r))
+            processProjection(r)
           }
-          recurse()
         } catch (e) {
           self.settleThrow(e)
         }
