@@ -1,8 +1,8 @@
 {
   "name": "@christyharagan/ixjs",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "The Interactive Extensions for JavaScript",
-  "main": "dist/es6/index.js",
+  "main": "dist/cjs/index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/christyharagan/IxJS.git"
