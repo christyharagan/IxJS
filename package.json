@@ -1,6 +1,6 @@
 {
   "name": "@christyharagan/ixjs",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The Interactive Extensions for JavaScript",
   "main": "dist/es6/index.js",
   "repository": {
