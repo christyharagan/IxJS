@@ -1,26 +1,48 @@
-import {AsyncIteratorClass} from '../asyncIterator'
-import {AsyncIterableClass} from '../asyncIterable'
+import {AsyncIteratorClass, AsyncIterator} from '../asyncIterator'
+import {AsyncIterableClass, AsyncIterable, isAsyncIterable} from '../asyncIterable'
 import {isIterable} from '../iterable'
-import {$$iterator} from '../symbol'
+import {$$iterator, $$asyncIterator} from '../symbol'
 
-export type Collection<T> = Iterator<T | Promise<T>> | Iterable<T | Promise<T>> | Promise<Iterator<T | Promise<T>> | Iterable<T | Promise<T>>>
+export type Collection<T> = Iterator<T | Promise<T>> | Iterable<T | Promise<T>> | Promise<Iterator<T | Promise<T>> | Iterable<T | Promise<T>> | AsyncIterable<T | Promise<T>>>
 
 export class AsyncFromIterator<T> extends AsyncIteratorClass<T> {
-  protected it: Promise<Iterator<T | Promise<T>>>
+  protected isAsync: Promise<boolean>
+  protected it: Iterator<T | Promise<T>>
+  protected ait: AsyncIterator<T | Promise<T>>
 
-  constructor(syncSource: Collection<T>) {
+  constructor(collection: Collection<T>) {
     super()
-    this.it = syncSource instanceof Promise ? syncSource.then(this.toAsyncIterator) : Promise.resolve(this.toAsyncIterator(syncSource))
+    if (collection instanceof Promise) {
+      const self = this
+      this.isAsync = collection.then(collection => {
+        if (isIterable(collection)) {
+          self.it = collection[$$iterator]()
+          return false
+        } else if (isAsyncIterable(collection)) {
+          self.ait = collection[$$asyncIterator]()
+          return true
+        } else {
+          self.it = collection
+          return false
+        }
+      })
+    } else {
+      if (isIterable(collection)) {
+        this.it = collection[$$iterator]()
+      } else {
+        this.it = collection
+      }
+      this.isAsync = Promise.resolve(false)
+    }
   }
 
-  protected toAsyncIterator(syncSource: Iterator<T | Promise<T>> | Iterable<T | Promise<T>>) {
-    return isIterable(syncSource) ? syncSource[$$iterator]() : syncSource
+  protected toAsyncIterator(syncSource: Iterator<T | Promise<T>> | Iterable<T | Promise<T>> | AsyncIterator<T | Promise<T>> | AsyncIterable<T | Promise<T>>): Iterator<T | Promise<T>> | AsyncIterator<T | Promise<T>> {
+    return isIterable(syncSource) ? syncSource[$$iterator]() : isAsyncIterable(syncSource) ? syncSource[$$asyncIterator]() : syncSource
   }
 
   protected _next() {
     const self = this
-    self.it.then(it => {
-      const next = it.next()
+    function doNext(next: IteratorResult<T | Promise<T>>) {
       if (next.done) {
         self.settleReturn()
       } else {
@@ -30,6 +52,13 @@ export class AsyncFromIterator<T> extends AsyncIteratorClass<T> {
         } else {
           self.settleNext(value)
         }
+      }
+    }
+    self.isAsync.then(isAsync => {
+      if (isAsync) {
+        self.ait.next().then(doNext)
+      } else {
+        doNext(self.it.next())
       }
     })
   }
