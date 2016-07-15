@@ -1,5 +1,5 @@
 import {IterableClass} from '../../iterable'
-import {expand} from '../../Iterable/expand'
+import {expand} from '../../iterable/expand'
 
 IterableClass.prototype.expand = expand
 
