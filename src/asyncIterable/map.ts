@@ -15,7 +15,6 @@ export class AsyncMapIterator<T, U> extends AsyncIteratorClass<U> {
     const self = this
     self.it.next().then(next => {
       if (next.done) {
-        self.settleReturn()
         if (next.value) {
           const retValue = self.fn(next.value, -1)
           if (retValue instanceof Promise) {
