@@ -1,7 +1,7 @@
-import {$$iterator} from './symbol'
+import { $$iterator } from './symbol'
 
 export class IterableClass<T> {
-  constructor(protected source: Iterable<T> | Iterator<T>) { }
+  constructor(protected source: { [Symbol.iterator](): Iterator<T> } | Iterator<T>) { }
 
   [$$iterator](): Iterator<T> {
     const source = this.source
@@ -16,6 +16,6 @@ export class IterableClass<T> {
   }
 }
 
-export function isIterable(x: any): x is Iterable<any> {
+export function isIterable(x: any): x is { [Symbol.iterator](): Iterator<any> } {
   return x != null && Object(x) === x && typeof x[$$iterator] !== 'undefined'
 }

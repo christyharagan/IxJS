@@ -1,13 +1,13 @@
-import {IteratorClass} from '../iterator'
-import {IterableClass} from '../iterable'
-import {$$iterator} from '../symbol'
+import { IteratorClass } from '../iterator'
+import { IterableClass } from '../iterable'
+import { $$iterator } from '../symbol'
 
 export class ExpandIterator<T> extends IteratorClass<T> {
   protected i = 0
   protected iterators: Iterator<T>[] = []
   protected currentValue: T | undefined
 
-  constructor(it: Iterable<T>, protected project: (value: T, index?: number) => Iterable<T>) {
+  constructor(it: { [Symbol.iterator](): Iterator<T> }, protected project: (value: T, index?: number) => { [Symbol.iterator](): Iterator<T> }) {
     super()
     this.iterators = [it[$$iterator]()]
   }
@@ -41,11 +41,11 @@ export class ExpandIterator<T> extends IteratorClass<T> {
 }
 
 export class ExpandIterable<T> extends IterableClass<T> {
-  constructor(it: Iterable<T>, private project: (value: T, index?: number) => Iterable<T>) {
+  constructor(it: { [Symbol.iterator](): Iterator<T> }, private project: (value: T, index?: number) => { [Symbol.iterator](): Iterator<T> }) {
     super(new ExpandIterator(it, project))
   }
 }
 
-export function expand<T>(project: (value: T, index?: number) => Iterable<T>) {
+export function expand<T>(project: (value: T, index?: number) => { [Symbol.iterator](): Iterator<T> }) {
   return new ExpandIterable(this, project)
 }

@@ -1,7 +1,7 @@
-import {IteratorClass} from '../iterator'
-import {IterableClass, isIterable} from '../iterable'
-import {RecursiveOrElement, Recursive} from './recursiveType'
-import {$$iterator} from '../symbol'
+import { IteratorClass } from '../iterator'
+import { IterableClass, isIterable } from '../iterable'
+import { RecursiveOrElement, Recursive } from './recursiveType'
+import { $$iterator } from '../symbol'
 
 export class ConcatMapIterator<T, I, R> extends IteratorClass<R> {
   protected i = 0
@@ -9,10 +9,10 @@ export class ConcatMapIterator<T, I, R> extends IteratorClass<R> {
   protected outerValue: T | undefined
   protected it: Iterator<T>
 
-  constructor(it: Iterable<T>, fn: (value: T, index?: number) => Recursive<R>)
-  constructor(it: Iterable<T>, fn: (value: T, index?: number) => Recursive<I>, resFn: (outerValue: T, innerValue: I) => R)
+  constructor(it: { [Symbol.iterator](): Iterator<T> }, fn: (value: T, index?: number) => Recursive<R>)
+  constructor(it: { [Symbol.iterator](): Iterator<T> }, fn: (value: T, index?: number) => Recursive<I>, resFn: (outerValue: T, innerValue: I) => R)
 
-  constructor(it: Iterable<T>, protected fn: (value: T, index?: number) => Recursive<I>, protected resFn?: (outerValue: T, innerValue: I) => R) {
+  constructor(it: { [Symbol.iterator](): Iterator<T> }, protected fn: (value: T, index?: number) => Recursive<I>, protected resFn?: (outerValue: T, innerValue: I) => R) {
     super()
     this.it = it[$$iterator]()
   }
@@ -53,10 +53,10 @@ export class ConcatMapIterator<T, I, R> extends IteratorClass<R> {
 }
 
 export class ConcatMapIterable<T, I, R> extends IterableClass<R> {
-  constructor(source: Iterable<T>, fn: (value: T, index?: number) => Recursive<I>, resFn: (outerValue: T, innerValue: I) => R)
-  constructor(source: Iterable<T>, fn: (value: T, index?: number) => Recursive<R>)
+  constructor(source: { [Symbol.iterator](): Iterator<T> }, fn: (value: T, index?: number) => Recursive<I>, resFn: (outerValue: T, innerValue: I) => R)
+  constructor(source: { [Symbol.iterator](): Iterator<T> }, fn: (value: T, index?: number) => Recursive<R>)
 
-  constructor(source: Iterable<T>, fn: (value: T, index?: number) => Recursive<I>, resFn?: (outerValue: T, innerValue: I) => R) {
+  constructor(source: { [Symbol.iterator](): Iterator<T> }, fn: (value: T, index?: number) => Recursive<I>, resFn?: (outerValue: T, innerValue: I) => R) {
     super(new ConcatMapIterator(source, fn, <(outerValue: T, innerValue: I) => R>resFn))
   }
 }

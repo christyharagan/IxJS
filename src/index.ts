@@ -2,6 +2,7 @@ export * from './asyncIterable'
 export * from './asyncIterator'
 export * from './iterable'
 export * from './iterator'
+export * from  './asyncIterable/recursiveType'
 
 import './add/asyncIterable/concat'
 import './add/asyncIterable/concatAll'

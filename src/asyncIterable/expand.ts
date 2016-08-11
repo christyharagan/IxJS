@@ -8,19 +8,19 @@ export class AsyncExpandIterator<T> extends AsyncIteratorClass<T> {
   protected iterators: AsyncIterator<T>[] = []
   protected currentValue: T | undefined
 
-  constructor(it: Iterable<T> | AsyncIterable<T>, protected project: (value: T, index?: number) => AsyncIterable<T> | Iterable<T> | Promise<AsyncIterable<T> | Iterable<T>>) {
+  constructor(it: { [Symbol.iterator](): Iterator<T> } | AsyncIterable<T>, protected project: (value: T, index?: number) => AsyncIterable<T> | { [Symbol.iterator](): Iterator<T> } | Promise<AsyncIterable<T> | { [Symbol.iterator](): Iterator<T> }>) {
     super()
-    this.iterators = [isAsyncIterable(it) ? it[$$asyncIterator]() : new AsyncFromIterator(<Iterable<T>>it)]
+    this.iterators = [isAsyncIterable(it) ? it[$$asyncIterator]() : new AsyncFromIterator(<{ [Symbol.iterator](): Iterator<T> }>it)]
   }
 
   protected _next() {
     const self = this
 
-    function processProjection(r: AsyncIterable<T> | Iterable<T>) {
+    function processProjection(r: AsyncIterable<T> | { [Symbol.iterator](): Iterator<T> }) {
       if (isAsyncIterable(r)) {
         self.iterators.push(r[$$asyncIterator]())
       } else {
-        self.iterators.push(new AsyncFromIterator(<Iterable<T>>r))
+        self.iterators.push(new AsyncFromIterator(<{ [Symbol.iterator](): Iterator<T> }>r))
       }
       recurse()
     }
@@ -61,11 +61,11 @@ export class AsyncExpandIterator<T> extends AsyncIteratorClass<T> {
 }
 
 export class AsyncExpandIterable<T> extends AsyncIterableClass<T> {
-  constructor(it: AsyncIterable<T>, private project: (value: T, index?: number) => AsyncIterable<T> | Iterable<T>) {
+  constructor(it: AsyncIterable<T>, private project: (value: T, index?: number) => AsyncIterable<T> | { [Symbol.iterator](): Iterator<T> }) {
     super(new AsyncExpandIterator(it, project))
   }
 }
 
-export function expand<T>(project: (value: T, index?: number) => AsyncIterable<T> | Iterable<T>) {
+export function expand<T>(project: (value: T, index?: number) => AsyncIterable<T> | { [Symbol.iterator](): Iterator<T> }) {
   return new AsyncExpandIterable(this, project)
 }

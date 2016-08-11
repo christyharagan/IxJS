@@ -1,9 +1,13 @@
-import {AsyncIteratorClass, AsyncIterator} from '../asyncIterator'
-import {AsyncIterableClass, AsyncIterable, isAsyncIterable} from '../asyncIterable'
-import {isIterable} from '../iterable'
-import {$$iterator, $$asyncIterator} from '../symbol'
+import { AsyncIteratorClass, AsyncIterator } from '../asyncIterator'
+import { AsyncIterableClass, AsyncIterable, isAsyncIterable } from '../asyncIterable'
+import { isIterable } from '../iterable'
+import { $$iterator, $$asyncIterator } from '../symbol'
 
-export type Collection<T> = Iterator<T | Promise<T>> | Iterable<T | Promise<T>> | Promise<Iterator<T | Promise<T>> | Iterable<T | Promise<T>> | AsyncIterable<T | Promise<T>>>
+export type Collection<T> =
+  Iterator<T | Promise<T>> |
+  { [Symbol.iterator](): Iterator<T | Promise<T>> } |
+  AsyncIterable<T | Promise<T>> |
+  Promise<Iterator<T | Promise<T>> | { [Symbol.iterator](): Iterator<T | Promise<T>> } | AsyncIterable<T | Promise<T>>>
 
 export class AsyncFromIterator<T> extends AsyncIteratorClass<T> {
   protected isAsync: Promise<boolean>
@@ -29,15 +33,13 @@ export class AsyncFromIterator<T> extends AsyncIteratorClass<T> {
     } else {
       if (isIterable(collection)) {
         this.it = collection[$$iterator]()
+      } else if (isAsyncIterable(collection)) {
+        this.ait = collection[$$asyncIterator]()
       } else {
         this.it = collection
       }
       this.isAsync = Promise.resolve(false)
     }
-  }
-
-  protected toAsyncIterator(syncSource: Iterator<T | Promise<T>> | Iterable<T | Promise<T>> | AsyncIterator<T | Promise<T>> | AsyncIterable<T | Promise<T>>): Iterator<T | Promise<T>> | AsyncIterator<T | Promise<T>> {
-    return isIterable(syncSource) ? syncSource[$$iterator]() : isAsyncIterable(syncSource) ? syncSource[$$asyncIterator]() : syncSource
   }
 
   protected _next() {
@@ -66,10 +68,10 @@ export class AsyncFromIterator<T> extends AsyncIteratorClass<T> {
 
 export class AsyncFromIterable<T> extends AsyncIterableClass<T> {
   constructor(syncSource: Collection<T>) {
-    super(new AsyncFromIterator(syncSource))
+    super(new AsyncFromIterator<T>(syncSource))
   }
 }
 
 export function from<T>(syncSource: Collection<T>) {
-  return new AsyncFromIterable(syncSource)
+  return new AsyncFromIterable<T>(syncSource)
 }

@@ -1,13 +1,13 @@
-import {IteratorClass} from '../iterator'
-import {IterableClass, isIterable} from '../iterable'
-import {RecursiveOrElement} from './recursiveType'
-import {$$iterator} from '../symbol'
+import { IteratorClass } from '../iterator'
+import { IterableClass, isIterable } from '../iterable'
+import { RecursiveOrElement } from './recursiveType'
+import { $$iterator } from '../symbol'
 
 export class ConcatAllIterator<T> extends IteratorClass<T> {
   protected i = 0
   protected iterators: Iterator<RecursiveOrElement<T>>[]
 
-  constructor(it: Iterable<RecursiveOrElement<T>>) {
+  constructor(it: { [Symbol.iterator](): Iterator<RecursiveOrElement<T>> }) {
     super()
     this.iterators = [it[$$iterator]()]
   }
@@ -41,7 +41,7 @@ export class ConcatAllIterator<T> extends IteratorClass<T> {
 }
 
 export class ConcatAllIterable<T> extends IterableClass<T> {
-  constructor(tSource: Iterable<RecursiveOrElement<T>>) {
+  constructor(tSource: { [Symbol.iterator](): Iterator<RecursiveOrElement<T>> }) {
     super(new ConcatAllIterator(tSource))
   }
 }

@@ -1,13 +1,13 @@
-import {AsyncIteratorClass, AsyncIterator} from '../asyncIterator'
-import {AsyncIterableClass, AsyncIterable, isAsyncIterable} from '../asyncIterable'
-import {AsyncFromIterator} from './from'
-import {$$asyncIterator, $$iterator} from '../symbol'
+import { AsyncIteratorClass, AsyncIterator } from '../asyncIterator'
+import { AsyncIterableClass, AsyncIterable, isAsyncIterable } from '../asyncIterable'
+import { AsyncFromIterator } from './from'
+import { $$asyncIterator, $$iterator } from '../symbol'
 
 export class AsyncConcatIterator<T> extends AsyncIteratorClass<T> {
   protected i = 0
   protected currentIterator: AsyncIterator<T> | undefined
 
-  constructor(protected iterables: Iterator<Iterable<T> | AsyncIterable<T>>) {
+  constructor(protected iterables: Iterator<{ [Symbol.iterator](): Iterator<T> } | AsyncIterable<T>>) {
     super()
   }
 
@@ -35,7 +35,7 @@ export class AsyncConcatIterator<T> extends AsyncIteratorClass<T> {
         if (isAsyncIterable(nextIterable)) {
           self.currentIterator = nextIterable[$$asyncIterator]()
         } else {
-          self.currentIterator = new AsyncFromIterator(<Iterable<T>>nextIterable)
+          self.currentIterator = new AsyncFromIterator(<{ [Symbol.iterator](): Iterator<T> }>nextIterable)
         }
         self._next()
       }
@@ -44,12 +44,12 @@ export class AsyncConcatIterator<T> extends AsyncIteratorClass<T> {
 }
 
 export class AsyncConcatIterable<T> extends AsyncIterableClass<T> {
-  constructor(source: AsyncIterable<T>, iterables: (Iterable<T> | AsyncIterable<T>)[]) {
-    const allIterables = [<Iterable<T> | AsyncIterable<T>>source].concat(iterables)
+  constructor(source: AsyncIterable<T>, iterables: ({ [Symbol.iterator](): Iterator<T> } | AsyncIterable<T>)[]) {
+    const allIterables = [<{ [Symbol.iterator](): Iterator<T> } | AsyncIterable<T>>source].concat(iterables)
     super(new AsyncConcatIterator(allIterables[$$iterator]()))
   }
 }
 
-export function concat<T>(...iterables: (Iterable<T> | AsyncIterable<T>)[]) {
+export function concat<T>(...iterables: ({ [Symbol.iterator](): Iterator<T> } | AsyncIterable<T>)[]) {
   return new AsyncConcatIterable(this, iterables)
 }

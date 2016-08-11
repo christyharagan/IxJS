@@ -1,14 +1,14 @@
-import {AsyncIteratorClass, AsyncIterator} from '../asyncIterator'
-import {AsyncIterableClass, AsyncIterable, isAsyncIterable} from '../asyncIterable'
-import {AsyncFromIterator} from './from'
-import {$$asyncIterator} from '../symbol'
+import { AsyncIteratorClass, AsyncIterator } from '../asyncIterator'
+import { AsyncIterableClass, AsyncIterable, isAsyncIterable } from '../asyncIterable'
+import { AsyncFromIterator } from './from'
+import { $$asyncIterator } from '../symbol'
 
 export class JoinIterator<T, U> extends AsyncIteratorClass<[T, U]> {
   protected a: AsyncIterator<T>
   protected b: AsyncIterator<U>
   protected i = 0
 
-  constructor(a: AsyncIterable<T>, b: Iterable<U> | AsyncIterable<U>) {
+  constructor(a: AsyncIterable<T>, b: { [Symbol.iterator](): Iterator<U> } | AsyncIterable<U>) {
     super()
     this.a = a[$$asyncIterator]()
     this.b = isAsyncIterable(b) ? b[$$asyncIterator]() : new AsyncFromIterator(b)
@@ -27,11 +27,11 @@ export class JoinIterator<T, U> extends AsyncIteratorClass<[T, U]> {
 }
 
 export class JoinIterable<T, U> extends AsyncIterableClass<[T, U]> {
-  constructor(source: AsyncIterable<T>, b: Iterable<U> | AsyncIterable<U>) {
+  constructor(source: AsyncIterable<T>, b: { [Symbol.iterator](): Iterator<U> } | AsyncIterable<U>) {
     super(new JoinIterator(source, b))
   }
 }
 
-export function join<U>(b: Iterable<U> | AsyncIterable<U>) {
+export function join<U>(b: { [Symbol.iterator](): Iterator<U> } | AsyncIterable<U>) {
   return new JoinIterable(this, b)
 }

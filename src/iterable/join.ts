@@ -1,13 +1,13 @@
-import {IteratorClass} from '../iterator'
-import {IterableClass} from '../iterable'
-import {$$iterator} from '../symbol'
+import { IteratorClass } from '../iterator'
+import { IterableClass } from '../iterable'
+import { $$iterator } from '../symbol'
 
 export class JoinIterator<T, U> extends IteratorClass<[T, U]> {
   protected a: Iterator<T>
   protected b: Iterator<U>
   protected i = 0
 
-  constructor(a: Iterable<T>, b: Iterable<U>) {
+  constructor(a: { [Symbol.iterator](): Iterator<T> }, b: { [Symbol.iterator](): Iterator<U> }) {
     super()
     this.a = a[$$iterator]()
     this.b = b[$$iterator]()
@@ -25,11 +25,11 @@ export class JoinIterator<T, U> extends IteratorClass<[T, U]> {
 }
 
 export class JoinIterable<T, U> extends IterableClass<[T, U]> {
-  constructor(source: Iterable<T>, b: Iterable<U>) {
+  constructor(source: { [Symbol.iterator](): Iterator<T> }, b: { [Symbol.iterator](): Iterator<U> }) {
     super(new JoinIterator(source, b))
   }
 }
 
-export function join<T, U>(b: Iterable<U>) {
+export function join<T, U>(b: { [Symbol.iterator](): Iterator<U> }) {
   return new JoinIterable(this, b)
 }

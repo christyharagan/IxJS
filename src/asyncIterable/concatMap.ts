@@ -1,9 +1,9 @@
-import {AsyncIteratorClass, AsyncIterator} from '../asyncIterator'
-import {AsyncIterable, isAsyncIterable, AsyncIterableClass} from '../asyncIterable'
-import {$$asyncIterator} from '../symbol'
-import {isIterable} from '../iterable'
-import {RecursiveOrElement, Recursive} from './recursiveType'
-import {AsyncFromIterator} from './from'
+import { AsyncIteratorClass, AsyncIterator } from '../asyncIterator'
+import { AsyncIterable, isAsyncIterable, AsyncIterableClass } from '../asyncIterable'
+import { $$asyncIterator } from '../symbol'
+import { isIterable } from '../iterable'
+import { RecursiveOrElement, Recursive } from './recursiveType'
+import { AsyncFromIterator } from './from'
 
 export class AsyncConcatMapIterator<T, I, R> extends AsyncIteratorClass<R> {
   protected i = 0
@@ -26,7 +26,7 @@ export class AsyncConcatMapIterator<T, I, R> extends AsyncIteratorClass<R> {
         self.iterators.push(_value[$$asyncIterator]())
         recurse()
       } else if (isIterable(_value)) {
-        self.iterators.push(new AsyncFromIterator(<Iterable<I>>_value))
+        self.iterators.push(new AsyncFromIterator(<{ [Symbol.iterator](): Iterator<I> }>_value))
         recurse()
       } else if (_value instanceof Promise) {
         (<Promise<any>>_value).then(process).catch(e => {
@@ -54,7 +54,7 @@ export class AsyncConcatMapIterator<T, I, R> extends AsyncIteratorClass<R> {
         if (isAsyncIterable(it)) {
           self.iterators.push(it[$$asyncIterator]())
         } else {
-          self.iterators.push(new AsyncFromIterator(<Iterable<I>>it))
+          self.iterators.push(new AsyncFromIterator(<{ [Symbol.iterator](): Iterator<I> }>it))
         }
         recurse()
       }
