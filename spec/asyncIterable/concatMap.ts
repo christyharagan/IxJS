@@ -35,8 +35,6 @@ describe('AsyncIterable.concatMap', () => {
     }
 
     return AsyncIterableClass.from(a).concatMap(f, false).toArray().then(concat => {
-      console.log('-------')
-      console.log(concat[2])
       expect(concat.length).to.equal(5)
       expect(concat[0]).to.equal(4)
       expect(concat[1]).to.equal(5)

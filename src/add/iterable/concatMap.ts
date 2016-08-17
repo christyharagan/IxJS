@@ -6,7 +6,7 @@ IterableClass.prototype.concatMap = concatMap
 
 declare module '../../iterable' {
   interface IterableClass<T> {
-    concatMap<R>(fn: (value: T, index?: number) => Recursive<R>): IterableClass<R>
-    concatMap<I, R>(fn: (value: T, index?: number) => Recursive<I>, resFn: (outerValue: T, innerValue: I) => R): IterableClass<R>
+    concatMap<R>(fn: (value: T, index?: number) => Recursive<R>, recursive?: boolean): IterableClass<R>
+    concatMap<I, R>(fn: (value: T, index?: number) => Recursive<I>, resFn: (outerValue: T, innerValue: I) => R, recursive?: boolean): IterableClass<R>
   }
 }

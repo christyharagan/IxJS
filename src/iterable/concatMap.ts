@@ -8,13 +8,28 @@ export class ConcatMapIterator<T, I, R> extends IteratorClass<R> {
   protected iterators: Iterator<RecursiveOrElement<I>>[] = []
   protected outerValue: T | undefined
   protected it: Iterator<T>
+  protected resFn?: (outerValue: T, innerValue: I) => R
+  protected recursive: boolean
 
-  constructor(it: { [Symbol.iterator](): Iterator<T> }, fn: (value: T, index?: number) => Recursive<R>)
-  constructor(it: { [Symbol.iterator](): Iterator<T> }, fn: (value: T, index?: number) => Recursive<I>, resFn: (outerValue: T, innerValue: I) => R)
+  constructor(it: { [Symbol.iterator](): Iterator<T> }, fn: (value: T, index?: number) => Recursive<R>, recursive?: boolean)
+  constructor(it: { [Symbol.iterator](): Iterator<T> }, fn: (value: T, index?: number) => Recursive<I>, resFn: (outerValue: T, innerValue: I) => R, recursive?: boolean)
 
-  constructor(it: { [Symbol.iterator](): Iterator<T> }, protected fn: (value: T, index?: number) => Recursive<I>, protected resFn?: (outerValue: T, innerValue: I) => R) {
+  constructor(it: { [Symbol.iterator](): Iterator<T> }, protected fn: (value: T, index?: number) => Recursive<I>, resFn?: ((outerValue: T, innerValue: I) => R) | boolean, recursive?: boolean) {
     super()
     this.it = it[$$iterator]()
+    if (resFn !== undefined) {
+      if (typeof resFn === 'boolean') {
+        this.recursive = resFn
+      } else {
+        this.resFn = resFn
+      }
+    }
+    if (recursive !== undefined) {
+      this.recursive = recursive
+    }
+    if (this.recursive === undefined) {
+      this.recursive = true
+    }
   }
 
   next() {
@@ -38,7 +53,7 @@ export class ConcatMapIterator<T, I, R> extends IteratorClass<R> {
           return recurse()
         } else {
           const _value = next.value
-          if (isIterable(_value)) {
+          if (self.recursive && isIterable(_value)) {
             self.iterators.push(_value[$$iterator]())
             return recurse()
           } else {
