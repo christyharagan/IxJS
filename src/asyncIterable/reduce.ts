@@ -1,5 +1,8 @@
 import {AsyncIterableClass} from '../asyncIterable'
 
+export function reduce<T, R>(accumulator: (acc: R | undefined, value: T) => R | Promise<R>): Promise<R>
+export function reduce<T, R>(accumulator: (acc: R, value: T) => R | Promise<R>, seed: R | Promise<R>): Promise<R>
+
 export function reduce<T, R>(accumulator: (acc: R | undefined, value: T) => R | Promise<R>, seed?: R | Promise<R>): Promise<R> {
   const self = <AsyncIterableClass<T>>this
   let r = seed

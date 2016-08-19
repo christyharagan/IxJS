@@ -1,4 +1,7 @@
-import {IterableClass} from '../iterable'
+import { IterableClass } from '../iterable'
+
+export function reduce<T, R>(accumulator: (acc: R | undefined, value: T) => R): R
+export function reduce<T, R>(accumulator: (acc: R, value: T) => R, seed: R): R
 
 export function reduce<T, R>(accumulator: (acc: R | undefined, value: T) => R, seed?: R): R {
   const self = <IterableClass<T>>this
