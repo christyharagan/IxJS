@@ -254,7 +254,8 @@ export * from '~@christyharagan/ixjs/dist/cjs/add/asyncIterable/join';
 declare module '~@christyharagan/ixjs/dist/cjs/add/asyncIterable/reduce' {
 module '~@christyharagan/ixjs/dist/cjs/asyncIterable' {
     interface AsyncIterableClass<T> {
-        reduce<R>(accumulator: (acc: R | undefined, value: T) => R | Promise<R>, seed?: R | Promise<R>): Promise<R>;
+        reduce<R>(accumulator: (acc: R | undefined, value: T, index?: number) => R | Promise<R>): Promise<R>;
+        reduce<R>(accumulator: (acc: R, value: T, index?: number) => R | Promise<R>, seed: R | Promise<R>): Promise<R>;
     }
 }
 export {};
@@ -435,7 +436,8 @@ export * from '~@christyharagan/ixjs/dist/cjs/add/iterable/join';
 declare module '~@christyharagan/ixjs/dist/cjs/add/iterable/reduce' {
 module '~@christyharagan/ixjs/dist/cjs/iterable' {
     interface IterableClass<T> {
-        reduce<R>(accumulator: (acc: R | undefined, value: T) => R, seed?: R): R;
+        reduce<R>(accumulator: (acc: R, value: T, index?: number) => R, seed: R): R;
+        reduce<R>(accumulator: (acc: R | undefined, value: T, index?: number) => R): R;
     }
 }
 export {};
