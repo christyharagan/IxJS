@@ -1,5 +1,5 @@
-import {IterableClass} from '../../iterable'
-import {map} from '../../iterable/map'
+import { IterableClass } from '../../iterable'
+import { map } from '../../iterable/map'
 
 IterableClass.prototype.map = map
 

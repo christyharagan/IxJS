@@ -1,5 +1,5 @@
-import {IterableClass} from '../../iterable'
-import {reduce} from '../../iterable/reduce'
+import { IterableClass } from '../../iterable'
+import { reduce } from '../../iterable/reduce'
 
 IterableClass.prototype.reduce = reduce
 

@@ -1,7 +1,7 @@
 /// <reference path="./lib.asyncIterator.d.ts"/>
 
-import {AsyncIterator} from './asyncIterator'
-import {$$asyncIterator} from './symbol'
+import { AsyncIterator } from './asyncIterator'
+import { $$asyncIterator } from './symbol'
 
 export type AsyncIterable<T> = {
   [Symbol.asyncIterator](): AsyncIterator<T>

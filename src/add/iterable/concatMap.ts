@@ -1,6 +1,6 @@
-import {IterableClass} from '../../iterable'
-import {concatMap} from '../../iterable/concatMap'
-import {Recursive} from '../../iterable/recursiveType'
+import { IterableClass } from '../../iterable'
+import { concatMap } from '../../iterable/concatMap'
+import { Recursive } from '../../iterable/recursiveType'
 
 IterableClass.prototype.concatMap = concatMap
 

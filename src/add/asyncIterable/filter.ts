@@ -1,5 +1,5 @@
-import {AsyncIterableClass} from '../../asyncIterable'
-import {filter} from '../../asyncIterable/filter'
+import { AsyncIterableClass } from '../../asyncIterable'
+import { filter } from '../../asyncIterable/filter'
 
 AsyncIterableClass.prototype.filter = filter
 

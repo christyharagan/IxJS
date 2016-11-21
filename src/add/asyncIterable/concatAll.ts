@@ -1,5 +1,5 @@
-import {AsyncIterableClass} from '../../asyncIterable'
-import {concatAll} from '../../asyncIterable/concatAll'
+import { AsyncIterableClass } from '../../asyncIterable'
+import { concatAll } from '../../asyncIterable/concatAll'
 
 AsyncIterableClass.prototype.concatAll = concatAll
 

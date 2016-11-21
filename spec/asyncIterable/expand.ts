@@ -1,5 +1,5 @@
-import {expect} from 'chai'
-import {AsyncIterableClass} from '../../src/index'
+import { expect } from 'chai'
+import { AsyncIterableClass } from '../../src/index'
 
 describe('AsyncIterable.expand', () => {
   it('should call the project operator recursively', () => {

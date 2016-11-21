@@ -1,5 +1,5 @@
-import {expect} from 'chai'
-import {IterableClass} from '../../src/index'
+import { expect } from 'chai'
+import { IterableClass } from '../../src/index'
 
 describe('Iterable.filter', () => {
   it('should equal the same as Array.filter', () => {

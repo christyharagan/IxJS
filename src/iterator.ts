@@ -1,4 +1,4 @@
-import {$$iterator} from './symbol'
+import { $$iterator } from './symbol'
 
 export abstract class IteratorClass<T> {
   [$$iterator](): Iterator<T> {

@@ -1,5 +1,5 @@
-import {IterableClass} from '../../iterable'
-import {toArray} from '../../iterable/toArray'
+import { IterableClass } from '../../iterable'
+import { toArray } from '../../iterable/toArray'
 
 IterableClass.prototype.toArray = toArray
 

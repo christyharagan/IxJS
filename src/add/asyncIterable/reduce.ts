@@ -1,5 +1,5 @@
-import {AsyncIterableClass} from '../../asyncIterable'
-import {reduce} from '../../asyncIterable/reduce'
+import { AsyncIterableClass } from '../../asyncIterable'
+import { reduce } from '../../asyncIterable/reduce'
 
 AsyncIterableClass.prototype.reduce = reduce
 

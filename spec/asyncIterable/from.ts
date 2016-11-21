@@ -1,6 +1,6 @@
-import {expect} from 'chai'
-import {AsyncIterableClass} from '../../src/index'
-import {$$iterator} from '../../src/symbol'
+import { expect } from 'chai'
+import { AsyncIterableClass } from '../../src/index'
+import { $$iterator } from '../../src/symbol'
 
 describe('AsyncIterable.from', () => {
   it('should handle Iterators', () => {

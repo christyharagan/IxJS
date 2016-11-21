@@ -1,5 +1,5 @@
-import {expect} from 'chai'
-import {IterableClass} from '../../src/index'
+import { expect } from 'chai'
+import { IterableClass } from '../../src/index'
 
 describe('Iterable.expand', () => {
   it('should call the project operator recursively', () => {

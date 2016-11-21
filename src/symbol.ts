@@ -29,7 +29,6 @@ let freeGlobal = objectTypes[typeof global] && global;
 if (freeGlobal && (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal)) {
   root = freeGlobal;
 }
-
 export let $$iterator: string
 export let $$asyncIterator: string
 

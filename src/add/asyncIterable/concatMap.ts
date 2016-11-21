@@ -1,6 +1,6 @@
-import {AsyncIterableClass} from '../../asyncIterable'
-import {concatMap} from '../../asyncIterable/concatMap'
-import {Recursive} from '../../asyncIterable/recursiveType'
+import { AsyncIterableClass } from '../../asyncIterable'
+import { concatMap } from '../../asyncIterable/concatMap'
+import { Recursive } from '../../asyncIterable/recursiveType'
 
 AsyncIterableClass.prototype.concatMap = concatMap
 

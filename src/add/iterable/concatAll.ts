@@ -1,5 +1,5 @@
-import {IterableClass} from '../../iterable'
-import {concatAll} from '../../iterable/concatAll'
+import { IterableClass } from '../../iterable'
+import { concatAll } from '../../iterable/concatAll'
 
 IterableClass.prototype.concatAll = concatAll
 

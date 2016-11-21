@@ -1,5 +1,5 @@
-import {IterableClass} from '../../iterable'
-import {filter} from '../../iterable/filter'
+import { IterableClass } from '../../iterable'
+import { filter } from '../../iterable/filter'
 
 IterableClass.prototype.filter = filter
 

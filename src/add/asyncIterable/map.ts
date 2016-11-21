@@ -1,5 +1,5 @@
-import {AsyncIterableClass} from '../../asyncIterable'
-import {map} from '../../asyncIterable/map'
+import { AsyncIterableClass } from '../../asyncIterable'
+import { map } from '../../asyncIterable/map'
 
 AsyncIterableClass.prototype.map = map
 

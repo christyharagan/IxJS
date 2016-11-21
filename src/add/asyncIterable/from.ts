@@ -1,5 +1,5 @@
-import {AsyncIterableClass} from '../../asyncIterable'
-import {from as staticFrom} from '../../asyncIterable/from'
+import { AsyncIterableClass } from '../../asyncIterable'
+import { from as staticFrom } from '../../asyncIterable/from'
 
 AsyncIterableClass.from = staticFrom
 

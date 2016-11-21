@@ -1,5 +1,5 @@
-import {AsyncIterableClass} from '../../asyncIterable'
-import {toArray} from '../../asyncIterable/toArray'
+import { AsyncIterableClass } from '../../asyncIterable'
+import { toArray } from '../../asyncIterable/toArray'
 
 AsyncIterableClass.prototype.toArray = toArray
 

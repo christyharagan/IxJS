@@ -1,4 +1,4 @@
-import {$$asyncIterator} from './symbol'
+import { $$asyncIterator } from './symbol'
 
 type Type = 'next' | 'throw' | 'return'
 interface Value<T> {

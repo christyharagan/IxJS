@@ -1,5 +1,5 @@
-import {expect} from 'chai'
-import {IterableClass} from '../../src/index'
+import { expect } from 'chai'
+import { IterableClass } from '../../src/index'
 
 describe('Iterable.concatAll', () => {
   it('should equal the same as a deeply nested Array.concat', () => {

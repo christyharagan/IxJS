@@ -1,5 +1,5 @@
-import {AsyncIterableClass, AsyncIterable} from '../../asyncIterable'
-import {expand} from '../../asyncIterable/expand'
+import { AsyncIterableClass, AsyncIterable } from '../../asyncIterable'
+import { expand } from '../../asyncIterable/expand'
 
 AsyncIterableClass.prototype.expand = expand
 

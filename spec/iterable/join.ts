@@ -1,5 +1,5 @@
-import {expect} from 'chai'
-import {IterableClass} from '../../src/index'
+import { expect } from 'chai'
+import { IterableClass } from '../../src/index'
 
 describe('Iterable.join', () => {
   it('should join two iterables', () => {
