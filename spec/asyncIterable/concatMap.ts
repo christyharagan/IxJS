@@ -10,7 +10,7 @@ describe('AsyncIterable.concatMap', () => {
       return fa[index]
     }
 
-    return AsyncIterableClass.from(a).concatMap(f).toArray().then(concat => {
+    return AsyncIterableClass.from(a).concatMap<number>(f).toArray().then(concat => {
       return expect(concat).to.have.members([4, 5, 6, 7, 8, 9])
     })
   })
@@ -22,7 +22,7 @@ describe('AsyncIterable.concatMap', () => {
       return Promise.resolve(fa[index])
     }
 
-    return AsyncIterableClass.from(a).concatMap(f).toArray().then(concat => {
+    return AsyncIterableClass.from(a).concatMap<number>(f).toArray().then(concat => {
       return expect(concat).to.have.members([4, 5, 6, 7, 8, 9])
     })
   })
@@ -34,7 +34,7 @@ describe('AsyncIterable.concatMap', () => {
       return fa[index]
     }
 
-    return AsyncIterableClass.from(a).concatMap(f, false).toArray().then(concat => {
+    return AsyncIterableClass.from(a).concatMap<number | AsyncIterableClass<number>>(f, false).toArray().then(concat => {
       expect(concat.length).to.equal(5)
       expect(concat[0]).to.equal(4)
       expect(concat[1]).to.equal(5)
