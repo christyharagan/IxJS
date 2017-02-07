@@ -17,6 +17,7 @@ import './add/asyncIterable/reduce'
 import './add/asyncIterable/switchIfEmpty'
 import './add/asyncIterable/toArray'
 import './add/asyncIterable/range'
+import './add/asyncIterable/take'
 
 import './add/iterable/concat'
 import './add/iterable/concatAll'
